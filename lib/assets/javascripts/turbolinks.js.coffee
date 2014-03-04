@@ -53,7 +53,7 @@ fetchReplacement = (url, callback, replaceContents) ->
 loadPage = (xhr, onLoadFunction = (=>), replaceContents = []) ->
   triggerEvent 'page:receive'
 
-  if doc = processResponse()
+  if doc = processResponse(xhr)
     nodes = changePage(extractTitleAndBody(doc)..., replaceContents)
     reflectRedirectedUrl(xhr)
     triggerEvent 'page:load', nodes
@@ -148,7 +148,7 @@ reflectNewUrl = (url) ->
   if (url = new ComponentUrl url).absolute isnt referer
     window.history.pushState { turbolinks: true, url: url.absolute }, '', url.absolute
 
-reflectRedirectedUrl = ->
+reflectRedirectedUrl = (xhr) ->
   if location = xhr.getResponseHeader 'X-XHR-Redirected-To'
     location = new ComponentUrl location
     preservedHash = if location.hasNoHash() then document.location.hash else ''
