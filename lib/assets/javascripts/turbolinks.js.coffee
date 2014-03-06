@@ -33,7 +33,7 @@ transitionCacheFor = (url) ->
 enableTransitionCache = (enable = true) ->
   transitionCacheEnabled = enable
 
-fetchReplacement = (url, callback, replaceContents) ->
+fetchReplacement = (url, onLoadFunction, replaceContents) ->
   triggerEvent 'page:fetch', url: url.absolute
 
   xhr?.abort()
@@ -57,7 +57,7 @@ loadPage = (xhr, onLoadFunction = (=>), replaceContents = []) ->
     nodes = changePage(extractTitleAndBody(doc)..., replaceContents)
     reflectRedirectedUrl(xhr)
     triggerEvent 'page:load', nodes
-    callback?()
+    onLoadFunction?()
   else
     document.location.href = url.absolute
 
