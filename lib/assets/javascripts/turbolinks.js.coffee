@@ -21,7 +21,7 @@ EVENTS =
   BEFORE_UNLOAD:  'page:before-unload'
   EXPIRE:         'page:expire'
 
-fetch = (url) ->
+fetch = (url, options = {}) ->
   url = new ComponentUrl url
 
   rememberReferer()
@@ -30,9 +30,9 @@ fetch = (url) ->
 
   if transitionCacheEnabled and cachedPage = transitionCacheFor(url.absolute)
     fetchHistory cachedPage
-    fetchReplacement url, null, false
+    fetchReplacement url, showProgressBar: false, change: options.change
   else
-    fetchReplacement url, resetScrollPosition
+    fetchReplacement url, onLoadFunction: resetScrollPosition, change: options.change
 
 transitionCacheFor = (url) ->
   cachedPage = pageCache[url]
@@ -49,7 +49,10 @@ enableProgressBar = (enable = true) ->
     progressBar?.uninstall()
     progressBar = null
 
-fetchReplacement = (url, onLoadFunction, showProgressBar = true) ->
+fetchReplacement = (url, options = {}) ->
+  onLoadFunction = options.onLoadFunction,
+  showProgressBar = options.showProgressBar ? true
+
   triggerEvent EVENTS.FETCH, url: url.absolute
 
   xhr?.abort()
