@@ -57,5 +57,5 @@ end
 map "/attachment.html" do
   run Rack::File.new(File.join(Root, "test", "attachment.html"), "Content-Type" => "text/html", "Content-Disposition" => "attachment; filename=attachment.html")
 end
-  
+
 run Rack::Directory.new(File.join(Root, "test"))
